@@ -10,7 +10,12 @@ const participantRoutes = require('./routes/participant.routes');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*', // Be more restrictive in production
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(morgan('dev'));
 app.use(express.json());
 

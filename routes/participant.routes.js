@@ -24,6 +24,7 @@ const participantValidation = [
 
 // Routes
 router.get('/', protect, getParticipants);
+router.get('/events/:eventId/attendance', protect, getParticipantsByEvent); // Add this line
 router.get('/:id', protect, getParticipant);
 router.post('/', protect, participantValidation, createParticipant);
 router.put('/:id', protect, participantValidation, updateParticipant);

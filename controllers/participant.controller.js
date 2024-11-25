@@ -251,36 +251,27 @@ exports.checkInParticipant = async (req, res) => {
   }
 };
 
-// Bulk import participants
-// exports.bulkImport = async (req, res) => {
-//   try {
-//     const { eventId, participants } = req.body;
+exports.getEventAttendance = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    
+    // Get all participants for this event with their attendance status
+    const participants = await Participant.find({ 
+      events: eventId 
+    })
+    .select('name email phone checkedIn checkInTime')
+    .sort({ checkInTime: -1, name: 1 }); // Sort by check-in time and then name
 
-//     const event = await Event.findById(eventId);
-//     if (!event) {
-//       return res.status(404).json({
-//         success: false,
-//         message: 'Event not found'
-//       });
-//     }
+    res.status(200).json({
+      success: true,
+      data: participants
+    });
+  } catch (error) {
+    console.error('Get event attendance error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error retrieving event attendance'
+    });
+  }
+};
 
-//     const importedParticipants = await Participant.insertMany(
-//       participants.map(p => ({
-//         ...p,
-//         events: [eventId]
-//       }))
-//     );
-
-//     await Event.findByIdAndUpdate(eventId, {
-//       $inc: { registered: importedParticipants.length }
-//     });
-
-//     res.status(201).json(importedParticipants);
-//   } catch (error) {
-//     console.error('Bulk import error:', error);
-//     res.status(500).json({
-//       success: false,
-//       message: 'Error importing participants'
-//     });
-//   }
-// };
